@@ -1,0 +1,11 @@
+Model Information:
+* title:	Concept Seat 500 Van
+* source:	https://sketchfab.com/3d-models/concept-seat-500-van-f5da09c428e8425ca37e2e1424dab054
+* author:	yugengen (https://sketchfab.com/yugengen)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Concept Seat 500 Van" (https://sketchfab.com/3d-models/concept-seat-500-van-f5da09c428e8425ca37e2e1424dab054) by yugengen (https://sketchfab.com/yugengen) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

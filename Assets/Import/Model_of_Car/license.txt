@@ -1,0 +1,11 @@
+Model Information:
+* title:	Model of Car
+* source:	https://sketchfab.com/3d-models/model-of-car-2019ba2a9c8049329f4bfeb1753e48a8
+* author:	guerrerogrd (https://sketchfab.com/guerrerogrd)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Model of Car" (https://sketchfab.com/3d-models/model-of-car-2019ba2a9c8049329f4bfeb1753e48a8) by guerrerogrd (https://sketchfab.com/guerrerogrd) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
