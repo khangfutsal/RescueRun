@@ -6,17 +6,22 @@ TagManager:
   tags:
   - Nurse
   - Visitor
+  - Cat01
+  - Cat02
+  - Car01
+  - Car02
+  - DangerZone
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Land
   - Interactable
-  - 
-  - 
+  - Animal
+  - Car
   - 
   - 
   - 

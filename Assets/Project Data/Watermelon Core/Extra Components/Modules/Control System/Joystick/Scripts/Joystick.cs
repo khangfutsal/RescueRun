@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RescueRun;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -40,7 +41,7 @@ namespace Watermelon
         private Canvas canvas;
         private Camera canvasCamera;
 
-        protected Vector2 input = Vector2.zero;
+        public Vector2 input = Vector2.zero;
 
         public Vector3 FormatInput => new Vector3(input.x, 0, input.y);
 
@@ -55,13 +56,18 @@ namespace Watermelon
 
         private void Awake()
         {
-            if (Control.InputType == InputType.UIJoystick)
+
+        }
+
+        private void Start()
+        {
+            if (Controller.InputType == InputType.Keyboard)
             {
-                Control.SetControl(this);
+                DisableControl();
             }
             else
             {
-                gameObject.SetActive(false);
+                EnableControl();
             }
         }
 
@@ -89,7 +95,7 @@ namespace Watermelon
 
             isActive = false;
 
-            if(useTutorial)
+            if (useTutorial)
             {
                 joystickAnimator.enabled = true;
                 isTutorialDisplayed = true;

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Triangle
+* source:	https://sketchfab.com/3d-models/triangle-e1682710a4c7437bb2ceafe6707a7095
+* author:	Md. Tazbi (https://sketchfab.com/Md.Tazbi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Triangle" (https://sketchfab.com/3d-models/triangle-e1682710a4c7437bb2ceafe6707a7095) by Md. Tazbi (https://sketchfab.com/Md.Tazbi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
