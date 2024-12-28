@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Watermelon;
 namespace RescueRun
@@ -21,6 +22,11 @@ namespace RescueRun
         public static void SetControl(IControlBehavior controlBehavior)
         {
             currentControl = controlBehavior;
+        }
+
+        public static void SetControl(InputType inputType)
+        {
+            Controller.inputType = inputType;
         }
 
         public static void Enable()

@@ -10,6 +10,7 @@ namespace RescueRun
         [SerializeField] private int time;
         [SerializeField] private int meter;
         [SerializeField] private int idxLine;
+        [SerializeField] private int threshold;
 
         [SerializeField] private List<LineData> lineData;
         public LayerMask layerMask;
@@ -21,6 +22,23 @@ namespace RescueRun
             StartCoroutine(Moving());
         }
 
+        private void Update()
+        {
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
+            {
+                if (Controller.InputType == Watermelon.InputType.UIJoystick)
+                {
+                    Debug.Log(GameController.Instance.GetPlayer().transform.position.z - transform.position.z);
+                    if (GameController.Instance.GetPlayer().transform.position.z - transform.position.z <= Mathf.Abs(threshold))
+                    {
+                        Debug.Log("Enemy near");
+                        GameController.Instance.GetCameraTransition().ShowOnly("CameraJoystickNear");
+                    }
+                }
+            }
+
+        }
+
         public void AssignLineData(LineData lineData)
         {
             meter = lineData.meter;
@@ -29,10 +47,9 @@ namespace RescueRun
 
         public LineData GetLineData(int idxLine)
         {
-            var lines = lineData[idxLine];
-            if (lines != null)
+            if (lineData[idxLine] != null)
             {
-                return lines;
+                return lineData[idxLine];
             }
             return null;
         }
@@ -40,6 +57,7 @@ namespace RescueRun
 
         public IEnumerator Moving()
         {
+            yield return new WaitUntil(() => GameController.Instance.GetCurrentState() == GameState.Start);
             var lineData = GetLineData(idxLine++);
             if (lineData != null)
             {

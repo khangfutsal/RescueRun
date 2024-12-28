@@ -15,13 +15,10 @@ namespace RescueRun
 
         public int GetTotalSpawnedByLevel(int level)
         {
-            for (int i = 0; i < levels.Count; i++)
-            {
-                if (int.Parse(levels[i].level) == level)
-                {
-                    return levels[i].totalSpawnObstacles;
-                }
 
+            if (levels[level].totalSpawnObstacles != null)
+            {
+                return levels[level].totalSpawnObstacles;
             }
             return levels.GetRandomItem().totalSpawnObstacles;
         }

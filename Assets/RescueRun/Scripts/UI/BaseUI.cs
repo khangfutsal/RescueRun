@@ -13,6 +13,7 @@ namespace RescueRun
         public void Show()
         {
             this.gameObject.SetActive(true);
+            transform.SetAsLastSibling();
         }
     }
 }

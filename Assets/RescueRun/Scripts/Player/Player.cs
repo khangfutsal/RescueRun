@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Watermelon;
 namespace RescueRun
@@ -16,17 +17,23 @@ namespace RescueRun
         [HideInInspector] public PlayerMoveState playerMove;
         #endregion
 
+        [SerializeField] private ScanAnimal scanAnimal;
+
         #region Component Unity
         [HideInInspector] public Animator anim;
         [HideInInspector] public Rigidbody rb;
         #endregion
 
         [Header("Properties Player")]
+        private const float increaseLimitSpeedKeyboard = 10f;
         [SerializeField] private float speed;
         [SerializeField] private float limitSpeedKeyboard;
         [SerializeField] private Vector3 currentVelocity;
         [SerializeField] private float deceleration;
         [SerializeField] private float aceleration;
+
+        [SerializeField] private float minX;
+        [SerializeField] private float maxX;
 
         [Space(5)]
         [SerializeField] private float defaultStamina;
@@ -46,7 +53,7 @@ namespace RescueRun
         [SerializeField] private int IdxAnimal02;
 
         private Vector2 input;
-
+        public ScanAnimal GetScanAnimal() => scanAnimal;
         public Vector3 GetCurrentVelocity() => currentVelocity;
         public Transform GetTransformHolderCat01() => animals01Holder;
 
@@ -68,6 +75,7 @@ namespace RescueRun
             stateMachine = new PlayerStateMachine();
             playerIdle = new PlayerIdleState(stateMachine, this, "Idle");
             playerMove = new PlayerMoveState(stateMachine, this, "Move");
+            scanAnimal = GetComponentInChildren<ScanAnimal>();
 
             rb = GetComponent<Rigidbody>();
 
@@ -77,40 +85,49 @@ namespace RescueRun
         private void Start()
         {
             stateMachine.Initialize(playerIdle);
+        }
+
+        public void AssignAnimals()
+        {
             var listAnimals = LevelController.Instance.Animals;
             for (int i = 0; i < listAnimals.Count; i++)
             {
+                Debug.Log("Foreach animals");
                 listAnimals[i].onCollected.AddListener(ShowAnimal);
             }
         }
 
         private void Update()
         {
-            if (stamina < defaultStamina)
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
             {
-                RegenerationStamina();
-            }
-            else if (stamina >= defaultStamina)
-            {
-                canUseStamina = true;
-                ResetCountdownTimeStamina();
-                UIController.Instance.GetUIGameplay().ToDefaultColorSlider();
-            }
-            if (Controller.InputType == InputType.Keyboard)
-            {
-                UpdatePositionOfKeyBoard();
-            }
-            if (Controller.InputType == InputType.UIJoystick)
-            {
-                UpdatePositionOfJoystick();
-            }
+                if (stamina < defaultStamina)
+                {
+                    RegenerationStamina();
+                }
+                else if (stamina >= defaultStamina)
+                {
+                    canUseStamina = true;
+                    ResetCountdownTimeStamina();
+                    UIController.Instance.GetUIGameplay().ToDefaultColorSlider();
+                }
+                if (Controller.InputType == InputType.Keyboard)
+                {
+                    UpdatePositionOfKeyBoard();
+                }
+                if (Controller.InputType == InputType.UIJoystick)
+                {
+                    UpdatePositionOfJoystick();
+                }
 
-            stateMachine.currentState.Update();
+                stateMachine.currentState.Update();
+            }
         }
 
         private void FixedUpdate()
         {
-            stateMachine.currentState.FixedUpdate();
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
+                stateMachine.currentState.FixedUpdate();
         }
 
         public void Initialize()
@@ -118,6 +135,7 @@ namespace RescueRun
             speed = GameController.Instance.GetSpeed();
             stamina = GameController.Instance.GetStamina();
 
+            limitSpeedKeyboard = speed + increaseLimitSpeedKeyboard;
             defaultStamina = stamina;
             curTimeRegenStamina = timeRegenStamina;
             canUseStamina = true;
@@ -174,7 +192,9 @@ namespace RescueRun
 
         public void MovingWithJoyStick()
         {
+
             rb.velocity = currentVelocity;
+
             if (CheckMoving())
             {
                 transform.forward = currentVelocity.normalized;
@@ -216,7 +236,7 @@ namespace RescueRun
 
         public void UpdatePositionOfKeyBoard()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 if (CanUseStamina())
                 {
@@ -245,6 +265,19 @@ namespace RescueRun
             input = Watermelon.Joystick.Instance.input;
             currentVelocity = new Vector3(input.x * speed, 0, input.y * speed);
 
+            Vector3 position = rb.position;
+            if (position.x < minX)
+            {
+                position.x = minX;
+            }
+            else if (position.x > maxX)
+            {
+                position.x = maxX;
+            }
+
+            // Gán lại vị trí đã giới hạn
+            rb.position = position;
+
         }
 
         private void OnTriggerEnter(Collider other)
@@ -252,9 +285,14 @@ namespace RescueRun
             if (other.gameObject.CompareTag("DangerZone"))
             {
                 Debug.Log("You Lose");
+                GameController.Instance.SetCurrentState(GameState.Lose);
+            }
+            if (other.gameObject.CompareTag("FinishZone"))
+            {
+                Debug.Log("You Win");
+                GameController.Instance.SetCurrentState(GameState.Win);
             }
         }
-
     }
 }
 

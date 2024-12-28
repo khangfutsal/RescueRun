@@ -39,6 +39,10 @@ MonoBehaviour:
     - {fileID: 7357806989451751058, guid: b0cc38b368bee7d4db9414e77fb244d9, type: 3}
     - {fileID: 7095631413114126951, guid: 9c4f405430331e545b6943d977989f73, type: 3}
   - levelType: 2
-    obstacles: []
+    obstacles:
+    - {fileID: 7357806989451751058, guid: b0cc38b368bee7d4db9414e77fb244d9, type: 3}
+    - {fileID: 7095631413114126951, guid: 9c4f405430331e545b6943d977989f73, type: 3}
   - levelType: 3
-    obstacles: []
+    obstacles:
+    - {fileID: 7357806989451751058, guid: b0cc38b368bee7d4db9414e77fb244d9, type: 3}
+    - {fileID: 7095631413114126951, guid: 9c4f405430331e545b6943d977989f73, type: 3}

@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using Watermelon;
-using static UnityEditorInternal.ReorderableList;
 namespace RescueRun
 {
     public class Animal : MonoBehaviour
@@ -78,13 +77,18 @@ namespace RescueRun
 
         private void Update()
         {
-            stateMachine.currentState.Update();
-            Collection();
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
+            {
+                stateMachine.currentState.Update();
+                Collection();
+            }
+
         }
 
         private void FixedUpdate()
         {
-            stateMachine.currentState.FixedUpdate();
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
+                stateMachine.currentState.FixedUpdate();
         }
 
         public IEnumerator MoveToPlayer()

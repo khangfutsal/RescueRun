@@ -14,10 +14,11 @@ namespace RescueRun
         [SerializeField] private AnimalDatabase animalDatabase;
 
         [SerializeField] private List<Animal> animals;
+        [SerializeField] private List<GameObject> obstaclesObj;
 
 
         [Header("About Level")]
-        [SerializeField] private int currentLevel = 1;
+        [SerializeField] private int currentLevel = 0;
 
         public float raycastDistance = 100f;
         public LayerMask spawnedObjectLayer;
@@ -27,17 +28,14 @@ namespace RescueRun
         [SerializeField] private float minZ;
         [SerializeField] private float maxZ;
 
-        public NavMeshSurface navmeshSurface;
-
         public List<Animal> Animals
         {
             get { return animals; }
-
         }
 
         public void Initialize()
         {
-            if (PlayerPrefs.GetInt("Level").IsUnityNull())
+            if (PlayerPrefs.HasKey("Level"))
             {
                 currentLevel = PlayerPrefs.GetInt("Level");
             }
@@ -49,31 +47,44 @@ namespace RescueRun
 
         private void InitMapLevel()
         {
-            if (PlayerPrefs.GetInt("Level").IsUnityNull())
+            int prevLevel = 0;
+            if (PlayerPrefs.HasKey("PrevLevel"))
+            {
+                prevLevel = PlayerPrefs.GetInt("PrevLevel");
+            }
+            if (PlayerPrefs.HasKey("Level"))
             {
                 currentLevel = PlayerPrefs.GetInt("Level");
             }
+            Debug.Log(currentLevel + " with :" + prevLevel);
             int totalByLevel = levelDatabase.GetTotalSpawnedByLevel(currentLevel);
-            Debug.Log(totalByLevel);
-            //int seed = GameController.Instance.GetSeed();
-            //Random.InitState(seed);
-
-            for (int i = 0; i < totalByLevel; i++)
+            Debug.Log("Total level :" + totalByLevel);
+            if (prevLevel == currentLevel) // Old level
             {
-                Vector3 randPosition = new Vector3(Random.Range(minX, maxX), 1, Random.Range(minZ, maxZ)) ;
-                Debug.Log(randPosition);
-                CheckPositionToSpawn(randPosition);
+                Vector3 vOffset = new Vector3(0.5f, 0.5f, 0.5f);
+                int seed = GameController.Instance.GetSeed();
+                Random.InitState(seed);
+                for (int i = 0; i < totalByLevel; i++)
+                {
+                    Vector3 randPosition = new Vector3(Random.Range(minX, maxX) + Random.Range(-vOffset.x, vOffset.x), 1, Random.Range(minZ, maxZ) + Random.Range(-vOffset.z, vOffset.z));
+                    Debug.Log(randPosition);
+                    CheckPositionToSpawn(randPosition);
+                }
+
+            }
+            else if (prevLevel != currentLevel)
+            {
+                for (int i = 0; i < totalByLevel; i++)
+                {
+                    Vector3 randPosition = new Vector3(Random.Range(minX, maxX), 1, Random.Range(minZ, maxZ));
+                    Debug.Log(randPosition);
+                    CheckPositionToSpawn(randPosition);
+                }
             }
 
-            
-        }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                navmeshSurface.BuildNavMesh();
-            }
+
+
         }
 
         public void CheckPositionToSpawn(Vector3 v)
@@ -103,7 +114,7 @@ namespace RescueRun
 
         void Spawn(Vector3 positionToSpawn, Quaternion rotationToSpawn, GameObject obj)
         {
-            ObjectPool.Instance.SpawnFromPool(obj.tag, positionToSpawn, rotationToSpawn);
+            obstaclesObj.Add(ObjectPool.Instance.SpawnFromPool(obj.tag, positionToSpawn, rotationToSpawn));
         }
 
         private void InitAnimal()
@@ -116,8 +127,38 @@ namespace RescueRun
                 var animalData = animalsData.animals[i];
                 Vector3 pos = new Vector3(animalData.position.x, 0, animalData.position.y);
                 GameObject obj = ObjectPool.Instance.SpawnFromPool(animalsData.animals[i].animalObj.tag, pos, Quaternion.identity);
-                animals.Add(obj.GetComponent<Animal>());
+                if (obj != null)
+                {
+                    animals.Add(obj.GetComponent<Animal>());
+                }
             }
+        }
+
+        public void DestroyLevel()
+        {
+            Debug.Log("Destroy Level");
+            for (int i = 0; i < animals.Count; i++)
+            {
+                if (animals[i].gameObject.activeSelf)
+                {
+                    Debug.Log("Animalssss");
+                    ObjectPool.instance.ReturnToPool(animals[i].gameObject.tag, animals[i].gameObject);
+                }
+            }
+
+            for (int i = 0; i < obstaclesObj.Count; i++)
+            {
+                if (obstaclesObj[i].activeSelf)
+                {
+                    Debug.Log("Obstaclessssk");
+                    Debug.Log("Obstaclessssk");
+                    ObjectPool.instance.ReturnToPool(obstaclesObj[i].tag, obstaclesObj[i].gameObject);
+                }
+
+            }
+
+            animals.Clear();
+            obstaclesObj.Clear();
         }
 
         public Animal GetCurrentAnimalTarget()

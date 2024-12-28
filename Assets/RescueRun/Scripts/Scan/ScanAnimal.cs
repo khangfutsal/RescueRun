@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
 namespace RescueRun
@@ -9,6 +10,7 @@ namespace RescueRun
         public Animal animalTarget;
         public MeshRenderer mesh;
         public LayerMask layerMask;
+        public bool isCalled;
 
         private void Awake()
         {
@@ -17,17 +19,31 @@ namespace RescueRun
 
         private void Start()
         {
-            animalTarget = LevelController.Instance.GetCurrentAnimalTarget();
-            Debug.Log(LevelController.Instance.GetCurrentAnimalTarget());
+            
             HideMesh();
         }
 
         private void Update()
         {
-            //if (!animalTarget.gameObject.activeSelf)
-            //{
-            //    animalTarget = LevelController.Instance.GetCurrentAnimalTarget();
-            //}
+            if (GameController.Instance.GetCurrentState() == GameState.Start)
+            {
+                if(animalTarget == null && !isCalled)
+                {
+                    isCalled = true;
+                    Controller.SetControl(Watermelon.InputType.Keyboard);
+                    GameController.Instance.GetCameraTransition().ShowOnly("CameraKeyboard");
+                    LevelController.Instance.DestroyLevel();
+                }
+                if (!animalTarget.gameObject.activeSelf)
+                {
+                    animalTarget = LevelController.Instance.GetCurrentAnimalTarget();
+                }
+            }
+        }
+
+        public void GetAnimalTarget()
+        {
+            animalTarget = LevelController.Instance.GetCurrentAnimalTarget();
         }
 
         public void HideMesh()

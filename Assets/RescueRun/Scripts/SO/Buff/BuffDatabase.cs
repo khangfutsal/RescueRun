@@ -19,6 +19,7 @@ namespace RescueRun
             }
             return buffs.GetRandomItem();
         }
+
     }
 }
 

@@ -547,7 +547,7 @@ MonoBehaviour:
   animalMove: {fileID: 0}
   animalSlider: {fileID: 0}
   radius: 20
-  timeScan: 10
+  timeScan: 3
   curTimeScan: 0
   scanSpeed: 2
   isOverlapped: 0
